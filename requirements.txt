@@ -1,0 +1,14 @@
+# Core Dependencies
+Flask
+Flask-SQLAlchemy
+WTForms
+Flask-WTF
+email-validator
+
+# Optional Features
+scikit-learn  # For resume matching
+plotly  # For interactive charts
+
+# Production Database
+psycopg2-binary  # PostgreSQL Database Adapter (for deployment)
+gunicorn  # WSGI HTTP server (for deployment)
