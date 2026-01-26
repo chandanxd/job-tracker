@@ -1,0 +1,85 @@
+from flask_wtf import FlaskForm
+from wtforms import StringField, TextAreaField, SelectField, DateField, SubmitField
+from wtforms.validators import DataRequired, Optional
+from datetime import datetime, timezone
+
+
+class JobApplicationForm(FlaskForm):
+    """Form for creating/editing job applications."""
+
+    company_name = StringField(
+        "Company Name",
+        validators=[DataRequired()],
+        render_kw={"placeholder": "e.g., Google"},
+    )
+
+    role = StringField(
+        "Role",
+        validators=[DataRequired()],
+        render_kw={"placeholder": "e.g., Software Engineer"},
+    )
+
+    status = SelectField(
+        "Status",
+        choices=[
+            ("Applied", "Applied"),
+            ("Interview", "Interview"),
+            ("Offer", "Offer"),
+        ],
+        validators=[DataRequired()],
+    )
+
+    application_date = DateField(
+        "Application Date",
+        format="%Y-%m-%d",
+        default=datetime.now(timezone.utc),
+        validators=[DataRequired()],
+    )
+
+    follow_up_date = DateField(
+        "Follow-up Date", format="%Y-%m-%d", validators=[Optional()]
+    )
+
+    job_description = TextAreaField(
+        "Job Description (Optional)",
+        render_kw={"rows": 6, "placeholder": "Paste the job description here"},
+    )
+
+    notes = TextAreaField(
+        "Notes (Optional)",
+        render_kw={
+            "rows": 4,
+            "placeholder": "Add any notes about the application here",
+        },
+    )
+
+    submit = SubmitField("Save Application")
+
+
+class SearchFilterForm(FlaskForm):
+    """Form for filtering and searching job applications."""
+
+    search_query = StringField(
+        "Search", render_kw={"placeholder": "Search a company or role"}
+    )
+
+    search_filter = SelectField(
+        "Filter by Status",
+        choices=[
+            ("", "All Statuses"),
+            ("Applied", "Applied"),
+            ("Interview", "Interview"),
+            ("Offer", "Offer"),
+            ("Rejected", "Rejected"),
+        ],
+    )
+
+    sort_by = SelectField(
+        "Sort by",
+        choices=[
+            ("application_date_desc", "Application Date (Newest)"),
+            ("application_date_asc", "Application Date (Oldest)"),
+            ("company_name_asc", "Company Name (A-Z)"),
+            ("company_name_desc", "Company Name (Z-A)"),
+        ],
+    )
