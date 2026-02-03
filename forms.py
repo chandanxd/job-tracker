@@ -25,6 +25,7 @@ class JobApplicationForm(FlaskForm):
             ("Applied", "Applied"),
             ("Interview", "Interview"),
             ("Offer", "Offer"),
+            ("Rejected", "Rejected"),
         ],
         validators=[DataRequired()],
     )
@@ -63,7 +64,7 @@ class SearchFilterForm(FlaskForm):
         "Search", render_kw={"placeholder": "Search a company or role"}
     )
 
-    search_filter = SelectField(
+    status_filter = SelectField(
         "Filter by Status",
         choices=[
             ("", "All Statuses"),
