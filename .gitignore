@@ -4,9 +4,11 @@ venv/
 
 # Local Database entries
 instance/
+*.db
 
 # Environment variables
 .env
 
 # python cache files
 __pycache__/
+*.pyc
