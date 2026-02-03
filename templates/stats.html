@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Statistics - Job Application Tracker{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4"><i class="bi bi-bar-chart-fill"></i> Application Statistics</h1>
+
+        <!-- Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Total Applications</h5>
+                        <h2 class="display-4 text-primary">{{ total_apps }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Applied</h5>
+                        <h2 class="display-4 text-info">{{ status_data.get('Applied', 0) }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Interviews</h5>
+                        <h2 class="display-4 text-warning">{{ status_data.get('Interview', 0) }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title text-muted">Offers</h5>
+                        <h2 class="display-4 text-success">{{ status_data.get('Offer', 0) }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Applications by Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Applications Over Time</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="timelineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<script>
+    // Status Pie Chart
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    new Chart(statusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Applied', 'Interview', 'Rejected', 'Offer'],
+            datasets: [{
+                data: [
+                    {{ status_data.get('Applied', 0) }},
+            {{ status_data.get('Interview', 0) }},
+                    {{ status_data.get('Rejected', 0) }},
+        {{ status_data.get('Offer', 0) }}
+                ],
+        backgroundColor: [
+        'rgba(13, 202, 240, 0.7)',   // Info blue
+        'rgba(255, 193, 7, 0.7)',     // Warning yellow
+        'rgba(108, 117, 125, 0.7)',   // Secondary gray
+        'rgba(25, 135, 84, 0.7)'      // Success green
+    ],
+        borderWidth: 2,
+        borderColor: '#fff'
+            }]
+        },
+        options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+    });
+
+    // Timeline Chart
+    const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+    new Chart(timelineCtx, {
+        type: 'line',
+        data: {
+            labels: [
+                {% for month, count in monthly_apps %}
+                    '{{ month }}',
+        {% endfor %}
+            ],
+        datasets: [{
+            label: 'Applications',
+            data: [
+                {% for month, count in monthly_apps %}
+        {{ count }},
+        {% endfor %}
+    ],
+        borderColor: 'rgba(13, 110, 253, 1)',
+        backgroundColor: 'rgba(13, 110, 253, 0.1)',
+        tension: 0.4,
+        fill: true
+            }]
+        },
+        options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
+    }
+    });
+</script>
+{% endblock %}
