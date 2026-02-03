@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, url_for, flash, send_file
 from datetime import datetime, timedelta, timezone
 from models import db, JobApplication
@@ -8,10 +9,10 @@ from io import StringIO, BytesIO
 
 app = Flask(__name__)
 
+load_dotenv()
+
 # Configuration
-app.config["SECRET_KEY"] = os.environ.get(
-    "SECRET_KEY", "dev-secret-key-change-in-production"
-)
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
     "DATABASE_URL", "sqlite:///jobs.db"
 )
