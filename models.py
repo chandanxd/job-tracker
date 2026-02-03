@@ -10,27 +10,28 @@ class JobApplication(db.Model):
     __tablename__ = "job_applications"
 
     id = db.Column(db.Integer, primary_key=True)
-    company_name = db.column(db.String(200), nullable=False)
-    role = db.Column(db.string(200), nullable=False)
-    status = db.Column(db.string(50), nullable=False, default="Applied")
+    company_name = db.Column(db.String(200), nullable=False)
+    role = db.Column(db.String(200), nullable=False)
+    status = db.Column(db.String(50), nullable=False, default="Applied")
     application_date = db.Column(
-        db.Date, nullable=False, default=datetime.now(timezone.utc)
-    )  # using timezone-aware format as default because utcnow() is now deprecated
-    follow_up_date = db.Column(db.Date, nullable=False)
+        db.Date, nullable=False, default=lambda: datetime.now(timezone.utc)
+    )
+    follow_up_date = db.Column(db.Date, nullable=True)
     job_description = db.Column(db.Text, nullable=True)
     notes = db.Column(db.Text, nullable=True)
-    created_at = db.Column(db.Date, default=datetime.now(timezone.utc))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(
-        db.Date, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc)
+        db.DateTime,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
     )
-    match_score = db.Column(db.Float, nullable=True)  # store match score
+    match_score = db.Column(db.Float, nullable=True)
 
     def __repr__(self):
         return f"<JobApplication {self.company_name} - {self.role}>"
 
-    def convert_to_dict(self):
-        """Convert to dictionary for JSON serialization (for CSV export)"""
-
+    def to_dict(self):
+        """Convert to dictionary for JSON serialization (useful for CSV export)"""
         return {
             "id": self.id,
             "company_name": self.company_name,
@@ -56,5 +57,5 @@ class JobApplication(db.Model):
         """Check if follow-up is due within 3 days"""
         if not self.follow_up_date:
             return False
-        days_until = (self.follow_up_date - datetime.now(timezone.utc)).days
+        days_until = (self.follow_up_date - datetime.utcnow().date()).days
         return 0 <= days_until <= 3
