@@ -46,6 +46,14 @@ class JobApplicationForm(FlaskForm):
         render_kw={"rows": 6, "placeholder": "Paste the job description here"},
     )
 
+    resume_text = TextAreaField(
+        "Your Resume (Optional)",
+        render_kw={
+            "rows": 8,
+            "placeholder": "Paste your resume text for matching..."
+        }
+    )
+
     notes = TextAreaField(
         "Notes (Optional)",
         render_kw={
