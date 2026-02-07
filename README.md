@@ -1,5 +1,10 @@
 # Job Application Tracker
 
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)
+![Flask](https://img.shields.io/badge/Flask-3.0-green.svg)
+![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+
+
 A Flask-based web application to manage job applications with intelligent resume matching and analytics.
 
 ![Dashboard Preview](screenshots/dashboard.png)
